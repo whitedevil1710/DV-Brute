@@ -260,16 +260,16 @@ Password Parameter  : {self.pass_param}
         #print(data)
         prv = requests.post(self.url, data=data)
         prvresp = self.content_length(prv)
-        print(prvresp)
+        #print(prvresp)
         print(colored(f"Total possiblities : {self.possibilit()}","cyan"))
         for i in self.user:
             for j in self.pswd:
                 data = {self.user_param: i, self.pass_param: j}
                 res = requests.post(self.url, data=data)
-                status = res.status_code
+                #status = res.status_code
                 crresp=self.content_length(res)
-                print("Status Code: "+str(status))
-                print("Curret Response:"+ str(crresp))
+                #print("Status Code: "+str(status))
+                #print("Curret Response:"+ str(crresp))
                 if prvresp != crresp:
                     print(colored(f"[+] Login Successful:\n Username: {str(i)}\n Password: {str(j)}", "green"))
                     success = True
