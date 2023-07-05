@@ -1,4 +1,3 @@
-
 import atexit
 from itertools import zip_longest
 import readline
@@ -295,7 +294,7 @@ Password Parameter  : {self.pass_param}
                     #print("Curret Response:"+ str(crresp))
                     if status in self.success_status_codes and prvresp != crresp:
                         self.possible_user.append(i)
-                        self.possible_pass.append(j)
+                        self.possible_pass.append(j)    
                         success = True
                         #return
                     else:
