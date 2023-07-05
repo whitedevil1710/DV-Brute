@@ -8,12 +8,6 @@ from termcolor import colored
 import subprocess
 import re
 
-
-if os.getuid() != 0:
-    print(colored("[!] Run the script as root!", "red"))
-    sys.exit(1)
-
-
 class Mycmd(cmd.Cmd):
     prompt = colored(">>>>", "green")
 
