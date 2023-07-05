@@ -1,5 +1,6 @@
 
 import atexit
+from itertools import zip_longest
 import readline
 import requests
 import cmd
@@ -16,6 +17,8 @@ class Mycmd(cmd.Cmd):
 
     def __init__(self):
         super().__init__()
+        self.possible_pass=[]
+        self.possible_user=[]
         self.user = []
         self.pswd = []
         self.url = ""
@@ -138,7 +141,21 @@ class Mycmd(cmd.Cmd):
         subprocess.run("clear",shell=True)
         python = sys.executable
         exec(open(sys.argv[0]).read())
+   
+    def do_history(self, args):
+        with open(".mycmd_history", 'r') as f:
+            max_line_number_width = len(str(sum(1 for _ in f)))
 
+        with open(".mycmd_history", 'r') as f:
+            for line_number, line in enumerate(f, start=1):
+                formatted_line_number = f"{line_number: <{max_line_number_width}}"
+                print(f"{formatted_line_number} {line.rstrip()}")
+
+    def do_clear_history(self,args):
+        with open(".mycmd_history", 'w') as f:
+            f.truncate(0)
+        print("Command history cleared.")
+   
     def do_set_pass(self, line):
         if not line:
             print(colored("[!] Error: No argument provided. Usage: set_pass <password filename>", "red"))
@@ -277,15 +294,23 @@ Password Parameter  : {self.pass_param}
                     #print("Status Code: "+str(status))
                     #print("Curret Response:"+ str(crresp))
                     if status in self.success_status_codes and prvresp != crresp:
-                        print(colored(f"[+] Login Successful:\n Username: {str(i)}\n Password: {str(j)}", "green"))
+                        self.possible_user.append(i)
+                        self.possible_pass.append(j)
                         success = True
                         #return
                     else:
-                        print(colored(f"[-] Failed Login: Username: {str(i)} Password: {str(j)}", "red"))
+                        print(colored(f"[-] Trying: Username: {str(i)} Password: {str(j)}", "red"))
+            print(colored("\n [+] Possible Username and Password","green"))
+            print("="*50)
+            self.print_possible_password()
         except KeyboardInterrupt:
             return "\n"
         if not success:
             print(colored("[!] Password not found", "yellow"))
+
+    def print_possible_password(self):
+        for i, j in zip(self.possible_pass, self.possible_user):
+            print(colored(f"{j} : {i}", "green"))
 
     def complete_set_pass(self, text, line, begidx, endidx):
         current_dir = os.getcwd()
