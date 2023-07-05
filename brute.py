@@ -1,4 +1,5 @@
 
+import atexit
 import readline
 import requests
 import cmd
@@ -22,7 +23,7 @@ class Mycmd(cmd.Cmd):
         self.pass_param = ""
         self.pass_file = ""
         self.user_file = ""
-        self.success_status_codes = [200, 301]
+        self.success_status_codes = [200, 301 ,302]
 
     
     def banner(self):
@@ -119,15 +120,19 @@ class Mycmd(cmd.Cmd):
     def emptyline(self):
             pass
 
+    def save_history(self):
+        history_file = os.path.expanduser(".mycmd_history")
+        readline.write_history_file(history_file)
+        readline.clear_history()
+        readline.set_history_length(1000)
+
     def preloop(self):
         history_file = os.path.expanduser(".mycmd_history")
         if os.path.exists(history_file):
             readline.read_history_file(history_file)
 
     def postloop(self):
-        history_file = os.path.expanduser(".mycmd_history")
-        readline.set_history_length(1000) 
-        readline.write_history_file(history_file)
+        atexit.register(self.save_history)
 
     def do_restart(self,args):
         subprocess.run("clear",shell=True)
@@ -262,20 +267,23 @@ Password Parameter  : {self.pass_param}
         prvresp = self.content_length(prv)
         #print(prvresp)
         print(colored(f"Total possiblities : {self.possibilit()}","cyan"))
-        for i in self.user:
-            for j in self.pswd:
-                data = {self.user_param: i, self.pass_param: j}
-                res = requests.post(self.url, data=data)
-                #status = res.status_code
-                crresp=self.content_length(res)
-                #print("Status Code: "+str(status))
-                #print("Curret Response:"+ str(crresp))
-                if prvresp != crresp:
-                    print(colored(f"[+] Login Successful:\n Username: {str(i)}\n Password: {str(j)}", "green"))
-                    success = True
-                    return
-                else:
-                    print(colored(f"[-] Failed Login: Username: {str(i)} Password: {str(j)}", "red"))
+        try:
+            for i in self.user:
+                for j in self.pswd:
+                    data = {self.user_param: i, self.pass_param: j}
+                    res = requests.post(self.url, data=data)
+                    status = res.status_code
+                    crresp=self.content_length(res)
+                    #print("Status Code: "+str(status))
+                    #print("Curret Response:"+ str(crresp))
+                    if status in self.success_status_codes and prvresp != crresp:
+                        print(colored(f"[+] Login Successful:\n Username: {str(i)}\n Password: {str(j)}", "green"))
+                        success = True
+                        #return
+                    else:
+                        print(colored(f"[-] Failed Login: Username: {str(i)} Password: {str(j)}", "red"))
+        except KeyboardInterrupt:
+            return "\n"
         if not success:
             print(colored("[!] Password not found", "yellow"))
 
