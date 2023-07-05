@@ -273,7 +273,7 @@ Password Parameter  : {self.pass_param}
                 if prvresp != crresp:
                     print(colored(f"[+] Login Successful:\n Username: {str(i)}\n Password: {str(j)}", "green"))
                     success = True
-                    #return
+                    return
                 else:
                     print(colored(f"[-] Failed Login: Username: {str(i)} Password: {str(j)}", "red"))
         if not success:
