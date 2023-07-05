@@ -1,18 +1,23 @@
 # DV-Brute
-DV-Brute is a command-line tool developed for bruteforcing login credentials. It allows you to perform automated login attempts by iterating through a list of usernames and passwords against a target URL. DV-Brute supports both single usernames and usernames loaded from a file, as well as single passwords and passwords loaded from a file.
+DV-Brute is a Python script for performing login scans using a configured set of options. It allows you to set the target URL, load usernames and passwords from files, set parameters for POST requests, and perform the scan.
+
 ## Prerequisites
 
-- requests library
-- termcolor library
+- certifi
+- charset-normalizer
+- idna
+- requests
+- termcolor
+- urllib3
 
 ## Installation
 Clone the DV-Brute repository from GitHub:
 ```
 git clone https://github.com/whitedevil1710/DV-Brute.git
 ```
-Install the required dependencies using pip:
+Install the required dependencies:
 ```
-pip install requests termcolor
+pip install -r requirements.txt
 ```
 ## Usage
 Run the script as root:
